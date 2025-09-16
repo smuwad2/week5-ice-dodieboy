@@ -26,13 +26,13 @@
         // add event handler code here
         function showHint() {
             let input = event.target.value;
-            axios.get("http://127.0.0.1:3000/suggest", {params: {query: input}})
+            axios.get("http://localhost:3000/suggest", {params: {query: input}})
                 .then(response => {
-                    console.log(response.data);
+                    console.log(response);
                     document.getElementById("suggestions").innerHTML = response.data;
                 })
                 .catch(error => {
-                    document.getElementById("suggestions").innerHTML = "Error: " + error;
+                    document.getElementById("suggestions").innerHTML = "Error: " + error.data;
                 })
         }
     </script>
