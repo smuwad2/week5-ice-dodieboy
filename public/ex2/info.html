@@ -1,32 +1,78 @@
 <!DOCTYPE html>
 <html>
-    <head>
 
-        <!-- Bootstrap -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        
-         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    </head>
-    <body>
-        <div class="bg-light text-center p-5 mb-4">
-            <h2>Choose an option:</h2>
-            <label for="limit">Limit:</label>
-            <input id="limit" type="number" min=1 max=5 value=1>
-            <select onchange="getData()" id="type">
-                <option value="customers">Customers</option>
-                <option value="products">Products</option>
-                <option value="suppliers">Suppliers</option>
-            </select>
-            
-        </div>
-        <div id="result">
+<head>
 
-        </div>
-        <script>
-            function getData() {
- 
-            }
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-        </script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        table,
+        th,
+        td {
+            border-top: 1px black solid;
+        }
+
+        table {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-light text-center p-5 mb-4">
+        <h2>Choose an option:</h2>
+        <label for="limit">Limit:</label>
+        <input id="limit" type="number" min=1 max=5 value=1>
+        <select onchange="getData()" id="type">
+            <option value="customers">Customers</option>
+            <option value="products">Products</option>
+            <option value="suppliers">Suppliers</option>
+        </select>
+    </div>
+    <div id="result">
+
+    </div>
+    <script>
+        function getData() {
+            let input = event.target.value;
+            let limit = document.getElementById("limit").value;
+            axios.get("http://localhost:3000/data", { params: { type: input, limit: limit } })
+                .then(response => {
+                    let out = document.getElementById("result");
+                    out.replaceChildren();
+                    let result = response.data.records;
+                    let title = document.createElement('h2')
+                    title.innerText = input;
+                    out.appendChild(title);
+                    let newTable = document.createElement('table');
+                    let newTBoday = newTable.createTBody();
+                    for (let i = 0; i < result.length + 1; i++) {
+                        let r = newTBoday.insertRow(i)
+                        if (i == 0) {
+                            for (const [key, value] of Object.entries(result[i])) {
+                                const newTH = document.createElement("th");
+                                newTH.innerText = key
+                                r.insertAdjacentElement("beforeend", newTH);
+                            }
+                        }else{
+                            for (const [key, value] of Object.entries(result[i-1])) {
+                                const newTD = document.createElement("td");
+                                newTD.innerText = value
+                                r.insertAdjacentElement("beforeend", newTD);
+                            }
+                        }
+                    }
+                    out.appendChild(newTable);
+                })
+                .catch(error => {
+                    document.getElementById("result").innerHTML = "Error: " + error;
+                })
+        }
+
+    </script>
 </body>
+
 </html>
