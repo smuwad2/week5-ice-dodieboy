@@ -28,10 +28,10 @@
             let input = event.target.value;
             axios.get("http://localhost:3000/suggest", {params: {query: input}})
                 .then(response => {
-                    document.getElementById("suggestions").innerHTML = response.data;
+                    document.getElementById("suggestions").innerText = response.data;
                 })
                 .catch(error => {
-                    document.getElementById("suggestions").innerHTML = "Error: " + error;
+                    console.log(error)
                 })
         }
     </script>
